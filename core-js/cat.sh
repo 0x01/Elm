@@ -1,33 +1,20 @@
-# I do not use this script, so it may be out of date.
-# Please make sure that this matches with cat.bat to
-# avoid confusing "errors".
+# this script parses cat.bat to find the sources for elm-runtime-*.js
+# please make sure that the first line of cat.bat lists all the files
 
-cat \
-    Guid.js\
-    foreign/JavaScript.js\
-    List.js\
-    Maybe.js\
-    foreign/JSON.js\
-    Value.js\
-    Char.js\
-    Graphics/Color.js\
-    Graphics/Collage.js\
-    Graphics/Element.js\
-    Text.js\
-    Graphics/Render.js\
-    runtime/Signal.js\
-    runtime/Dispatcher.js\
-    Signal/HTTP.js\
-    Signal/Input.js\
-    Signal/Keyboard.js\
-    Signal/Mouse.js\
-    Signal/Random.js\
-    Signal/Time.js\
-    Signal/Window.js\
-    Date.js\
-    Prelude.js\
-    Dict.js\
-    Set.js\
-    Automaton.js\
-    Signal/WebSocket.js\
-    > ../elm/elm-runtime.js
+PREFIX="^copy /B "
+POSTFIX=" ...elm-mini\.js$"
+
+# take the first line of the file
+head -n1 cat.bat |
+
+# find "$PREFIX (files) $POSTFIX"
+sed "s_${PREFIX}\(.*\)${POSTFIX}_\1_" |
+
+# windows -> unix paths, replace \ with /
+tr \\ / |
+
+# replace + with spacebar
+tr + " " |
+
+# cat together
+xargs cat > ../elm/elm-runtime.js
